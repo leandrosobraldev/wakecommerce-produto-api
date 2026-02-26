@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/test/">
+    <Project Path="test/Aplication.Test/Aplication.Test.csproj" Id="10118a38-2f54-44d7-895f-c039c733d6f3" />
+  </Folder>
+  <Project Path="src/WakeCommerce.API/WakeCommerce.API.csproj" />
+  <Project Path="src/WakeCommerce.Application/WakeCommerce.Application/WakeCommerce.Application.csproj" Id="19d6ebe6-f7f4-49ef-b0fd-8afeb7f734e6" />
+  <Project Path="src/WakeCommerce.Domain/WakeCommerce.Domain/WakeCommerce.Domain.csproj" Id="eb2f33e2-0a62-4894-ba55-a582efb61dac" />
+  <Project Path="src/WakeCommerce.Infrastructure/WakeCommerce.Infrastructure/WakeCommerce.Infrastructure.csproj" Id="0741cb55-98c7-4320-9218-8602f1163008" />
+</Solution>
