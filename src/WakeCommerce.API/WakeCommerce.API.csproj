@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\WakeCommerce.CrossCutting\WakeCommerce.CrossCutting\WakeCommerce.IoC.csproj" />
   </ItemGroup>
 
 </Project>
