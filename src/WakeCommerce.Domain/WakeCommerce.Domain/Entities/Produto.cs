@@ -4,23 +4,22 @@ namespace WakeCommerce.Domain.Entities
 {
     public sealed class Produto : Entity
     {
-        public Produto(string nome, int estoque, decimal preco, DateTime dataCadastro)
+        public Produto() { }
+        public Produto(string nome, int estoque, decimal preco)
         {
-            Validate(nome, estoque, preco, dataCadastro);
+            Validate(nome, estoque, preco);
         }
         public string Nome { get; private set; }
         public decimal Estoque { get; private set; }
         public decimal Preco { get; private set; }
-        public DateTime DataCadastro { get; private set; }
+          
 
-        
-
-        public void Update(string nome, int estoque, decimal preco, DateTime dataCadastro)
+        public void Update(string nome, int estoque, decimal preco)
         {
-            Validate(nome, estoque, preco, dataCadastro);
+            Validate(nome, estoque, preco);
         }
 
-        private void Validate(string nome, int estoque, decimal preco, DateTime dataCadastro)
+        private void Validate(string nome, int estoque, decimal preco)
         {
             DomainExceptionValidation.When(string.IsNullOrEmpty(nome), "O nome é obrigatório");
 
@@ -31,7 +30,7 @@ namespace WakeCommerce.Domain.Entities
             Nome = nome;
             Preco = preco;
             Estoque = estoque;
-            DataCadastro = dataCadastro;
+            
         }
 
     }

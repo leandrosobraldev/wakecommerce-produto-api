@@ -4,7 +4,7 @@ using WakeCommerce.Application.Interfaces;
 
 namespace WakeCommerce.API.Controllers
 {
-    [Route("api/v1/[Controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class ProdutosController : Controller
     {
@@ -16,6 +16,10 @@ namespace WakeCommerce.API.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get([FromQuery] string? name)
         {
             if (!string.IsNullOrEmpty(name))
@@ -25,6 +29,10 @@ namespace WakeCommerce.API.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Post([FromBody] ProdutoDTO produtoDto)
         {
             if (!ModelState.IsValid)
@@ -39,6 +47,10 @@ namespace WakeCommerce.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Put(int id, [FromBody] ProdutoDTO produtoDto)
         {
             if (id != produtoDto.Id)
@@ -52,6 +64,10 @@ namespace WakeCommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ProdutoDTO>> Delete(int id)
         {
             var produtoDto = await _produtoService.GetById(id);
