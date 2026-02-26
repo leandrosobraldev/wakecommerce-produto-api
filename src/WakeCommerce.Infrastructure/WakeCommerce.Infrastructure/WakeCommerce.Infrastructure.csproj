@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Context\" />
+    <Folder Include="EntitiesConfiguration\" />
+    <Folder Include="Respositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WakeCommerce.Domain\WakeCommerce.Domain\WakeCommerce.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
