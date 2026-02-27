@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WakeCommerce.Domain\WakeCommerce.Domain\WakeCommerce.Domain.csproj" />
+    <ProjectReference Include="..\WakeCommerce.Domain\WakeCommerce.Domain.csproj" />
   </ItemGroup>
 
 </Project>

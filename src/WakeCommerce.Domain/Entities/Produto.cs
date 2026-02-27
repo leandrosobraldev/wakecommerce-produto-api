@@ -10,7 +10,7 @@ namespace WakeCommerce.Domain.Entities
             Validate(nome, estoque, preco);
         }
         public string Nome { get; private set; }
-        public decimal Estoque { get; private set; }
+        public int Estoque { get; private set; }
         public decimal Preco { get; private set; }
           
 

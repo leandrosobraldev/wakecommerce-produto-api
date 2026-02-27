@@ -16,9 +16,9 @@ namespace WakeCommerce.IoC.DependencyInjection
             IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(
+                options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection")
-            ));
+    ));
 
             services.AddScoped<IProdutoRepository, ProdutoRepository>();
             services.AddScoped<IProdutoService, ProdutoService>();

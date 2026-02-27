@@ -12,9 +12,9 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WakeCommerce.Application\WakeCommerce.Application\WakeCommerce.Application.csproj" />
-    <ProjectReference Include="..\..\WakeCommerce.Domain\WakeCommerce.Domain\WakeCommerce.Domain.csproj" />
-    <ProjectReference Include="..\..\WakeCommerce.Infrastructure\WakeCommerce.Infrastructure\WakeCommerce.Infrastructure.csproj" />
+    <ProjectReference Include="..\WakeCommerce.Application\WakeCommerce.Application.csproj" />
+    <ProjectReference Include="..\WakeCommerce.Domain\WakeCommerce.Domain.csproj" />
+    <ProjectReference Include="..\WakeCommerce.Infrastructure\WakeCommerce.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

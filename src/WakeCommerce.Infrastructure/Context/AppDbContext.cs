@@ -12,10 +12,12 @@ public class AppDbContext : DbContext
 
     public DbSet<Produto> Produtos { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(builder);
-        builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext)
-            .Assembly);
+        modelBuilder.Entity<Produto>(entity =>
+        {
+            entity.Property(p => p.Preco).HasPrecision(18, 2);
+            entity.Property(p => p.Estoque).HasPrecision(18, 3);
+        });
     }
 }
