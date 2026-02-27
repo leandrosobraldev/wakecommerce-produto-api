@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -8,30 +9,56 @@ namespace WakeCommerce.API.Extensions
 {
     internal sealed class GlobalExceptionHandler : IExceptionHandler
     {
-        public async ValueTask<bool> TryHandleAsync(HttpContext httpContext,
-                                              Exception exception,
-                                              CancellationToken cancellationToken)
+        public async ValueTask<bool> TryHandleAsync(
+            HttpContext httpContext,
+            Exception exception,
+            CancellationToken cancellationToken)
         {
             Activity? activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
 
             var problemDetails = exception switch
             {
-                NotFoundException nf => CreateProblemDetails("NotFound", nf.Message, 404, "https://tools.ietf.org/html/rfc9110#section-15.5.5", httpContext, activity),
-                BadRequestException br => CreateProblemDetails("BadRequest", br.Message, 400, "https://tools.ietf.org/html/rfc9110#section-15.5.1", httpContext, activity),
-                _ => CreateProblemDetails("Server error", exception.Message, 500, "https://tools.ietf.org/html/rfc9110#section-15.6.1", httpContext, activity)
+                NotFoundException nf => CreateProblemDetails(
+                    title: "Not Found",
+                    detail: nf.Message,
+                    status: StatusCodes.Status404NotFound,
+                    type: "https://httpstatuses.com/404",
+                    code: "NOT_FOUND",
+                    httpContext, activity),
+
+                BadRequestException br => CreateProblemDetails(
+                    title: "Bad Request",
+                    detail: br.Message,
+                    status: StatusCodes.Status400BadRequest,
+                    type: "https://httpstatuses.com/400",
+                    code: "BAD_REQUEST",
+                    httpContext, activity),
+
+                _ => CreateProblemDetails(
+                    title: "Server Error",
+                    detail: "Ocorreu um erro inesperado.",
+                    status: StatusCodes.Status500InternalServerError,
+                    type: "https://httpstatuses.com/500",
+                    code: "SERVER_ERROR",
+                    httpContext, activity)
             };
 
+            httpContext.Response.ContentType = "application/problem+json";
             httpContext.Response.StatusCode = problemDetails.Status!.Value;
+
             await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+
             return true;
         }
 
-        private static ProblemDetails CreateProblemDetails(string title,
-                                                       string detail,
-                                                       int status,
-                                                       string type,
-                                                       HttpContext context,
-                                                       Activity? activity)
+        private static ProblemDetails CreateProblemDetails(
+            string title,
+            string detail,
+            int status,
+            string type,
+            string code,
+            HttpContext context,
+            Activity? activity)
         {
             return new ProblemDetails
             {
@@ -40,11 +67,12 @@ namespace WakeCommerce.API.Extensions
                 Type = type,
                 Status = status,
                 Instance = context.Request.Path,
-                Extensions = new Dictionary<string, object?>
-            {
-                { "requestId", context.TraceIdentifier },
-                { "traceId", activity?.Id }
-            }
+                Extensions =
+                {
+                    ["code"] = code,
+                    ["requestId"] = context.TraceIdentifier,
+                    ["traceId"] = activity?.Id
+                }
             };
         }
     }

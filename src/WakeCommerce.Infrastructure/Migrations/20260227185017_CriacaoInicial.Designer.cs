@@ -11,8 +11,8 @@ using WakeCommerce.Infrastructure.Context;
 namespace WakeCommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260227023040_AjusteEstoqueInt")]
-    partial class AjusteEstoqueInt
+    [Migration("20260227185017_CriacaoInicial")]
+    partial class CriacaoInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,14 +32,16 @@ namespace WakeCommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Estoque")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Estoque")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Preco")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

@@ -6,7 +6,7 @@ using WakeCommerce.Application.Mappings;
 using WakeCommerce.Application.Services;
 using WakeCommerce.Domain.Interfaces;
 using WakeCommerce.Infrastructure.Context;
-using WakeCommerce.Infrastructure.Respositories;
+using WakeCommerce.Infrastructure.Repositories;
 
 namespace WakeCommerce.IoC.DependencyInjection
 {

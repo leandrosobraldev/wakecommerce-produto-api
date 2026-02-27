@@ -1,14 +1,14 @@
-﻿using WakeCommerce.Application.DTO;
+﻿using WakeCommerce.Application.DTOs.Produto;
+using WakeCommerce.Domain.Common;
 
 namespace WakeCommerce.Application.Interfaces
 {
     public interface IProdutoService
     {
-        Task<IEnumerable<ProdutoDTO>> GetProdutos();
-        Task<ProdutoDTO> GetById(int? id);
-        Task<IEnumerable<ProdutoDTO>> GetByName(string name);
-        Task Add(ProdutoDTO produtoDto);
-        Task Update(ProdutoDTO produtoDto);
-        Task Remove(int? id);
+        Task<PagedResult<ProdutoResponseDTO>> SearchAsync(ProdutoSearchDTO dto);
+        Task<ProdutoResponseDTO> GetById(int id);
+        Task Add(ProdutoCreateDTO dto);
+        Task Update(int id, ProdutoUpdateDTO dto);
+        Task Remove(int id);
     }
 }

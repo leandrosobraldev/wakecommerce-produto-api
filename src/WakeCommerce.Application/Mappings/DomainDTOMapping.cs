@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using WakeCommerce.Application.DTO;
+using WakeCommerce.Application.DTOs.Produto;
 using WakeCommerce.Domain.Entities;
 
 namespace WakeCommerce.Application.Mappings
@@ -8,7 +8,8 @@ namespace WakeCommerce.Application.Mappings
     {
         public DomainDTOMapping()
         {
-            CreateMap<Produto, ProdutoDTO>().ReverseMap();
+            CreateMap<Produto, ProdutoCreateDTO>().ReverseMap();
+            CreateMap<Produto, ProdutoResponseDTO>().ReverseMap();
 
         }
         
