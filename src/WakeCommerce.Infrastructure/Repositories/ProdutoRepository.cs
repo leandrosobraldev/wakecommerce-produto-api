@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WakeCommerce.Domain.Common;
 using WakeCommerce.Domain.Entities;
 using WakeCommerce.Domain.Interfaces;
@@ -9,13 +10,15 @@ namespace WakeCommerce.Infrastructure.Repositories;
 public class ProdutoRepository : IProdutoRepository
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<ProdutoRepository> _logger;
 
-    public ProdutoRepository(AppDbContext context)
+    public ProdutoRepository(AppDbContext context, ILogger<ProdutoRepository> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
-    public async Task<PagedResult<Produto>> SearchAsync(ProdutoSearch search)
+    public async Task<PagedResult<Produto>> SearchAsync(ProdutoSearch search, CancellationToken cancellationToken = default)
     {
         var page = search.Page <= 0 ? 1 : search.Page;
         var pageSize = search.PageSize <= 0 ? 10 : search.PageSize;
@@ -53,12 +56,14 @@ public class ProdutoRepository : IProdutoRepository
                 : query.OrderBy(p => p.Nome),
         };
 
-        var total = await query.CountAsync();
+        var total = await query.CountAsync(cancellationToken);
 
         var items = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
+
+        _logger.LogDebug("SearchAsync: {Total} produtos encontrados, página {Page}", total, page);
 
         return new PagedResult<Produto>
         {
@@ -69,29 +74,32 @@ public class ProdutoRepository : IProdutoRepository
         };
     }
 
-    public async Task<Produto?> GetByIdAsync(int id)
+    public async Task<Produto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.Produtos
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
-    public async Task<Produto> CreateAsync(Produto product)
+    public async Task<Produto> CreateAsync(Produto product, CancellationToken cancellationToken = default)
     {
         _context.Produtos.Add(product);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation("Produto criado: Id={Id}, Nome={Nome}", product.Id, product.Nome);
         return product;
     }
 
-    public async Task UpdateAsync(Produto product)
+    public async Task UpdateAsync(Produto product, CancellationToken cancellationToken = default)
     {
         _context.Produtos.Update(product);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation("Produto atualizado: Id={Id}", product.Id);
     }
 
-    public async Task RemoveAsync(Produto product)
+    public async Task RemoveAsync(Produto product, CancellationToken cancellationToken = default)
     {
         _context.Produtos.Remove(product);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation("Produto removido: Id={Id}, Nome={Nome}", product.Id, product.Nome);
     }
 }

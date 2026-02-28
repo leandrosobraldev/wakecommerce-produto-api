@@ -1,5 +1,8 @@
 <Solution>
-  <Folder Name="/test/" />
+  <Folder Name="/test/">
+    <Project Path="test/Aplication.Test/Aplication.Test.csproj" />
+    <Project Path="test/WakeCommerce.API.IntegrationTests/WakeCommerce.API.IntegrationTests.csproj" />
+  </Folder>
   <Project Path="src/WakeCommerce.API/WakeCommerce.API.csproj" />
   <Project Path="src/WakeCommerce.Application/WakeCommerce.Application.csproj" />
   <Project Path="src/WakeCommerce.CrossCutting/WakeCommerce.IoC.csproj" />

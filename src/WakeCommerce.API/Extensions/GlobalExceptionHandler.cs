@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using WakeCommerce.Application.Common.Exceptions;
+using WakeCommerce.Domain.Validation;
 
 namespace WakeCommerce.API.Extensions
 {
@@ -14,7 +15,7 @@ namespace WakeCommerce.API.Extensions
             Exception exception,
             CancellationToken cancellationToken)
         {
-            Activity? activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+            var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
 
             var problemDetails = exception switch
             {
@@ -32,6 +33,14 @@ namespace WakeCommerce.API.Extensions
                     status: StatusCodes.Status400BadRequest,
                     type: "https://httpstatuses.com/400",
                     code: "BAD_REQUEST",
+                    httpContext, activity),
+
+                DomainExceptionValidation dev => CreateProblemDetails(
+                    title: "Validation Error",
+                    detail: dev.Message,
+                    status: StatusCodes.Status422UnprocessableEntity,
+                    type: "https://httpstatuses.com/422",
+                    code: "VALIDATION_ERROR",
                     httpContext, activity),
 
                 _ => CreateProblemDetails(

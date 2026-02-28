@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +10,10 @@ namespace WakeCommerce.Domain.Interfaces
 {
     public interface IProdutoRepository
     {
-        Task<PagedResult<Produto>> SearchAsync(ProdutoSearch search);
-        Task<Produto?> GetByIdAsync(int id);
-        Task<Produto> CreateAsync(Produto product);
-        Task UpdateAsync(Produto product);
-        Task RemoveAsync(Produto product);
+        Task<PagedResult<Produto>> SearchAsync(ProdutoSearch search, CancellationToken cancellationToken = default);
+        Task<Produto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+        Task<Produto> CreateAsync(Produto product, CancellationToken cancellationToken = default);
+        Task UpdateAsync(Produto product, CancellationToken cancellationToken = default);
+        Task RemoveAsync(Produto product, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WakeCommerce.Application.DTOs.Produto;
 using WakeCommerce.Application.Interfaces;
 using WakeCommerce.Domain.Common;
@@ -7,6 +8,7 @@ namespace WakeCommerce.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProdutosController : Controller
     {
         private readonly IProdutoService _produtoService;
@@ -22,9 +24,9 @@ namespace WakeCommerce.API.Controllers
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<PagedResult<ProdutoResponseDTO>>> Get([FromQuery] ProdutoSearchDTO produtoSearchDto)
+        public async Task<ActionResult<PagedResult<ProdutoResponseDTO>>> Get([FromQuery] ProdutoSearchDTO produtoSearchDto, CancellationToken cancellationToken)
         {
-            var result = await _produtoService.SearchAsync(produtoSearchDto);
+            var result = await _produtoService.SearchAsync(produtoSearchDto, cancellationToken);
             return Ok(result);
         }
 
@@ -32,28 +34,23 @@ namespace WakeCommerce.API.Controllers
         [HttpGet("{id:int}", Name = "GetProduto")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProdutoResponseDTO>> GetById(int id)
+        public async Task<ActionResult<ProdutoResponseDTO>> GetById(int id, CancellationToken cancellationToken)
         {
-            var result = await _produtoService.GetById(id);
+            var result = await _produtoService.GetById(id, cancellationToken);
             return Ok(result);
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] ProdutoCreateDTO produtoDto)
+        public async Task<ActionResult<ProdutoResponseDTO>> Post([FromBody] ProdutoCreateDTO produtoDto, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            await _produtoService.Add(produtoDto);
-
-            return new CreatedAtRouteResult("GetProduto",
-                new { name = produtoDto.Nome }, produtoDto);
+            var result = await _produtoService.Add(produtoDto, cancellationToken);
+            return CreatedAtRoute("GetProduto", new { id = result.Id }, result.Produto);
         }
 
         [HttpPut("{id}")]
@@ -61,27 +58,20 @@ namespace WakeCommerce.API.Controllers
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(int id, [FromBody] ProdutoUpdateDTO produtoDto)
+        public async Task<IActionResult> Put(int id, [FromBody] ProdutoUpdateDTO produtoDto, CancellationToken cancellationToken)
         {
-            await _produtoService.Update(id, produtoDto);
-
+            await _produtoService.Update(id, produtoDto, cancellationToken);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ProdutoCreateDTO>> Delete(int id)
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            var produtoDto = await _produtoService.GetById(id);
-            if (produtoDto == null)
-            {
-                return NotFound();
-            }
-            await _produtoService.Remove(id);
-            return Ok(produtoDto);
+            await _produtoService.Remove(id, cancellationToken);
+            return NoContent();
         }
     }
 }
