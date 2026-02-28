@@ -8,7 +8,7 @@ using WakeCommerce.Infrastructure.Context;
 
 namespace WakeCommerce.API.IntegrationTests;
 
-public class WakeCommerceWebApplicationFactory : WebApplicationFactory<Program>
+public class ProdutoApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
