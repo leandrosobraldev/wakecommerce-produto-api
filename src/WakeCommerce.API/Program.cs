@@ -63,7 +63,23 @@ builder.Services.AddWakeCommerceRateLimiting();
 var app = builder.Build();
 
 if (!app.Environment.IsEnvironment("Testing"))
-    await app.Services.EnsureDatabaseSeededAsync();
+{
+    // Em Docker o SQL Server pode levar alguns segundos para ficar pronto
+    const int maxRetries = 15;
+    const int delayMs = 2000;
+    for (var i = 0; i < maxRetries; i++)
+    {
+        try
+        {
+            await app.Services.EnsureDatabaseSeededAsync();
+            break;
+        }
+        catch (Microsoft.Data.SqlClient.SqlException) when (i < maxRetries - 1)
+        {
+            await Task.Delay(delayMs);
+        }
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
