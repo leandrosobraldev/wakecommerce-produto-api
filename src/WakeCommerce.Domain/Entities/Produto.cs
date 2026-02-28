@@ -1,4 +1,4 @@
-﻿using WakeCommerce.Domain.Validation;
+using WakeCommerce.Domain.Validation;
 
 namespace WakeCommerce.Domain.Entities
 {
@@ -9,7 +9,7 @@ namespace WakeCommerce.Domain.Entities
         {
             Validate(nome, estoque, preco);
         }
-        public string Nome { get; private set; }
+        public string Nome { get; private set; } = null!;
         public int Estoque { get; private set; }
         public decimal Preco { get; private set; }
           

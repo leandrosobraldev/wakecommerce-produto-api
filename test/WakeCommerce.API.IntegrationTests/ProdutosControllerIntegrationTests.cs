@@ -7,7 +7,7 @@ using Xunit;
 
 namespace WakeCommerce.API.IntegrationTests;
 
-public class ProdutosControllerIntegrationTests : IClassFixture<WakeCommerceWebApplicationFactory>
+public class ProdutosControllerIntegrationTests : IClassFixture<ProdutoApplicationFactory>
 {
     private readonly HttpClient _client;
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -16,7 +16,7 @@ public class ProdutosControllerIntegrationTests : IClassFixture<WakeCommerceWebA
         PropertyNameCaseInsensitive = true
     };
 
-    public ProdutosControllerIntegrationTests(WakeCommerceWebApplicationFactory factory)
+    public ProdutosControllerIntegrationTests(ProdutoApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
