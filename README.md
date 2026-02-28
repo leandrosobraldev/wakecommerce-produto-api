@@ -16,7 +16,7 @@ API REST em .NET 8 para CRUD de Produtos, desenvolvida como solução de avalia�
 | **WakeCommerce.Infrastructure** | Implementação de persistência: Entity Framework Core, repositórios, contexto e migrations. |
 | **WakeCommerce.CrossCutting (WakeCommerce.IoC)** | Injeção de dependência: registro de serviços, DbContext e repositórios. |
 | **Aplication.Test** | Projeto de testes unitários (xUnit). |
-| **WakeCommerce.API.IntegrationTests** | Projeto de testes de integração (WebApplicationFactory, banco em memória). |
+| **WakeCommerce.API.IntegrationTests** | Projeto de testes de integração (ProdutoApplicationFactory, TestAuthHandler, EF InMemory). |
 
 ## Tecnologias
 
@@ -68,7 +68,7 @@ Na primeira subida o SQL Server pode levar 20–40 segundos para ficar pronto; a
 **Ver logs da API** (útil para debug):
 
 ```bash
-docker compose logs -f wakecommerceapi
+docker compose logs -f wakecommerce-produto-api
 ```
 
 Para obter um token JWT no Swagger: **Authorize** → em "Value" informe só o token (sem a palavra "Bearer"). O token é obtido em:
@@ -139,7 +139,7 @@ Em **produção**, altere `Jwt:SecretKey` em `appsettings.json` (ou variáveis d
 ## Testes
 
 - **Testes unitários**: projeto `Aplication.Test` (xUnit).
-- **Testes de integração**: projeto `WakeCommerce.API.IntegrationTests` (WebApplicationFactory, EF InMemory).
+- **Testes de integração**: projeto `WakeCommerce.API.IntegrationTests` (ProdutoApplicationFactory, TestAuthHandler, EF InMemory).
 
 Execute todos os testes:
 

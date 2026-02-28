@@ -1,37 +1,33 @@
 using WakeCommerce.Domain.Validation;
 
-namespace WakeCommerce.Domain.Entities
+namespace WakeCommerce.Domain.Entities;
+
+public sealed class Produto : Entity
 {
-    public sealed class Produto : Entity
+    public Produto() { }
+
+    public Produto(string nome, int estoque, decimal preco)
     {
-        public Produto() { }
-        public Produto(string nome, int estoque, decimal preco)
-        {
-            Validate(nome, estoque, preco);
-        }
-        public string Nome { get; private set; } = null!;
-        public int Estoque { get; private set; }
-        public decimal Preco { get; private set; }
-          
+        Validate(nome, estoque, preco);
+    }
 
-        public void Update(string nome, int estoque, decimal preco)
-        {
-            Validate(nome, estoque, preco);
-        }
+    public string Nome { get; private set; } = null!;
+    public int Estoque { get; private set; }
+    public decimal Preco { get; private set; }
 
-        private void Validate(string nome, int estoque, decimal preco)
-        {
-            DomainExceptionValidation.When(string.IsNullOrEmpty(nome), "O nome é obrigatório");
+    public void Update(string nome, int estoque, decimal preco)
+    {
+        Validate(nome, estoque, preco);
+    }
 
-            DomainExceptionValidation.When(preco < 0, "Valor do preço inválido");
+    private void Validate(string nome, int estoque, decimal preco)
+    {
+        DomainExceptionValidation.When(string.IsNullOrEmpty(nome), "O nome é obrigatório");
+        DomainExceptionValidation.When(preco < 0, "Valor do preço inválido");
+        DomainExceptionValidation.When(estoque < 0, "Estoque inválido");
 
-            DomainExceptionValidation.When(estoque < 0, "Estoque inválido");
-
-            Nome = nome;
-            Preco = preco;
-            Estoque = estoque;
-            
-        }
-
+        Nome = nome;
+        Preco = preco;
+        Estoque = estoque;
     }
 }
