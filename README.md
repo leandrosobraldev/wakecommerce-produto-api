@@ -2,6 +2,10 @@
 
 API REST em .NET 8 para CRUD de Produtos, desenvolvida como solução de avaliação.
 
+**Para testar rápido (Docker):** `docker compose up -d` → aguardar ~30 s → [Swagger](http://localhost:5000/swagger) | [Health](http://localhost:5000/health) | Token: `POST /api/v1/Auth/token` com `{"userName": "dev"}`. O banco sobe com 5 produtos já inseridos.
+
+---
+
 ## Estrutura da Solution
 
 | Projeto | Descrição |
@@ -56,9 +60,16 @@ docker compose up -d
 
 - **API**: `http://localhost:5000`
 - **Swagger**: `http://localhost:5000/swagger`
+- **Health (saúde da API e do banco)**: `GET http://localhost:5000/health` — retorna 200 quando a API e o SQL Server estão ok.
 - **SQL Server**: porta `1433` (usuário `sa`, senha `StrongPassword@123`, banco `WakeCommerceDb`)
 
-Na primeira subida o SQL Server pode levar 20–40 segundos para ficar pronto; a API faz retentativas automáticas. Se aparecer erro ao acessar, aguarde um pouco e tente de novo.
+Na primeira subida o SQL Server pode levar 20–40 segundos para ficar pronto; a API aplica as migrations e insere **5 produtos iniciais** (seed) automaticamente. Se aparecer erro ao acessar, aguarde um pouco e tente de novo.
+
+**Ver logs da API** (útil para debug):
+
+```bash
+docker compose logs -f wakecommerceapi
+```
 
 Para obter um token JWT no Swagger: **Authorize** → em "Value" informe só o token (sem a palavra "Bearer"). O token é obtido em:
 
