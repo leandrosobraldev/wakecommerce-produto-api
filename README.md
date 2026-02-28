@@ -44,7 +44,38 @@ cd src/WakeCommerce.Infrastructure
 dotnet ef database update --startup-project ../WakeCommerce.API
 ```
 
-## Como executar
+## Executar com Docker (para recrutadores)
+
+Requisitos: **Docker** e **Docker Compose** instalados.
+
+Na raiz do repositório:
+
+```bash
+docker compose up -d
+```
+
+- **API**: `http://localhost:5000`
+- **Swagger**: `http://localhost:5000/swagger`
+- **SQL Server**: porta `1433` (usuário `sa`, senha `StrongPassword@123`, banco `WakeCommerceDb`)
+
+Na primeira subida o SQL Server pode levar 20–40 segundos para ficar pronto; a API faz retentativas automáticas. Se aparecer erro ao acessar, aguarde um pouco e tente de novo.
+
+Para obter um token JWT no Swagger: **Authorize** → em "Value" informe só o token (sem a palavra "Bearer"). O token é obtido em:
+
+```http
+POST http://localhost:5000/api/v1/Auth/token
+Content-Type: application/json
+
+{"userName": "dev"}
+```
+
+Use o valor do campo `token` da resposta no Authorize do Swagger.
+
+Parar os containers: `docker compose down`.
+
+---
+
+## Como executar (local, sem Docker)
 
 1. Configure a connection string em `appsettings.json` (ou User Secrets) em **WakeCommerce.API**:
 
