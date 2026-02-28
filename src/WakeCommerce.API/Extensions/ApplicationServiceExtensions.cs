@@ -10,19 +10,27 @@ public static class ApplicationServiceExtensions
 {
     public static WebApplicationBuilder AddWakeCommerceServices(this WebApplicationBuilder builder)
     {
+        // ---- Observabilidade / Logs ----
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddSingleton<IMemoryLogStore, MemoryLogStore>();
         builder.Services.AddSingleton<ILoggerProvider, MemoryLoggerProvider>();
 
-        builder.Logging.AddSimpleConsole(options =>
+        builder.Logging.AddSimpleConsole(o =>
         {
-            options.TimestampFormat = "[yyyy-MM-dd HH:mm:ss] ";
-            options.IncludeScopes = true;
+            o.TimestampFormat = "[yyyy-MM-dd HH:mm:ss] ";
+            o.IncludeScopes = true;
         });
 
-        builder.Services.AddControllers();
+        // ----Controllers ----
+        builder.Services
+            .AddControllers()
+            .AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+        // ---- INFRA  ----
         builder.Services.AddInfrastructureAPI(builder.Configuration);
 
+        // ---- Swagger ----
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
@@ -35,26 +43,40 @@ public static class ApplicationServiceExtensions
                 Type = SecuritySchemeType.ApiKey
             });
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
             {
+                new OpenApiSecurityScheme
                 {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                },
+                Array.Empty<string>()
+            }
+        });
         });
 
-        builder.Services.AddControllers().AddJsonOptions(x =>
-            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+        // ---- Exception ----
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddProblemDetails();
 
+        // ---- Health ----
         builder.Services.AddHealthChecks()
-            .AddDbContextCheck<AppDbContext>(name: "database");
+            .AddDbContextCheck<AppDbContext>("database");
 
-        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+        // ---- CORS ----
+        ConfigureCors(builder);
+
+        // ---- Auth / Rate limit ----
+        builder.Services.AddJwtAuthentication(builder.Configuration);
+        builder.Services.AddWakeCommerceRateLimiting();
+
+        return builder;
+    }
+
+    private static void ConfigureCors(WebApplicationBuilder builder)
+    {
+        var allowedOrigins =
+            builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
         builder.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(policy =>
@@ -65,10 +87,5 @@ public static class ApplicationServiceExtensions
                     policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
         });
-
-        builder.Services.AddJwtAuthentication(builder.Configuration);
-        builder.Services.AddWakeCommerceRateLimiting();
-
-        return builder;
     }
 }

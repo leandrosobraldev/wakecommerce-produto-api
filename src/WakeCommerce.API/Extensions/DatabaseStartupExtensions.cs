@@ -13,15 +13,20 @@ public static class DatabaseStartupExtensions
         if (app.Environment.IsEnvironment("Testing"))
             return;
 
-        for (var i = 0; i < MaxRetries; i++)
+        var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("DatabaseStartup");
+
+        for (var attempt = 1; attempt <= MaxRetries; attempt++)
         {
             try
             {
+                logger.LogInformation("Garantir que o banco de dados esteja pronto (attempt {Attempt}/{Max})", attempt, MaxRetries);
                 await app.Services.EnsureDatabaseSeededAsync();
+                logger.LogInformation("O banco está pronto.");
                 return;
             }
-            catch (Microsoft.Data.SqlClient.SqlException) when (i < MaxRetries - 1)
+            catch (Microsoft.Data.SqlClient.SqlException ex) when (attempt < MaxRetries)
             {
+                logger.LogWarning(ex, "Banco de dados ainda não está pronto. Tentando novamente em {Delay}ms...", DelayMs);
                 await Task.Delay(DelayMs);
             }
         }

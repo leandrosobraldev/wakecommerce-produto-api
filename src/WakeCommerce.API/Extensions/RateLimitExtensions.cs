@@ -25,7 +25,7 @@ public static class RateLimitExtensions
                 await context.HttpContext.Response.WriteAsJsonAsync(new
                 {
                     type = "https://httpstatuses.com/429",
-                    title = "Too Many Requests",
+                    title = "Muitas requisições!!!",
                     status = 429,
                     detail = "Muitas requisições. Tente novamente em alguns instantes."
                 });
