@@ -18,9 +18,7 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
-    /// <summary>
-    /// Gera um token JWT para uso em desenvolvimento/testes. Em produção use um identity provider.
-    /// </summary>
+   
     [HttpPost("token")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(TokenResponse), StatusCodes.Status200OK)]

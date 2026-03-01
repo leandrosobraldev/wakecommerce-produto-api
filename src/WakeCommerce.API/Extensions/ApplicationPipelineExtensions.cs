@@ -24,8 +24,7 @@ public static class ApplicationPipelineExtensions
 
         app.MapControllers();
         app.MapHealthChecks("/health");
-        app.MapLogsPage();
-
+        
         return app;
     }
 
@@ -36,14 +35,5 @@ public static class ApplicationPipelineExtensions
         {
             await next(context);
         }
-    }
-
-    private static void MapLogsPage(this IEndpointRouteBuilder endpoints)
-    {
-        endpoints.MapGet("/logs", (IMemoryLogStore store) =>
-        {
-            var html = LogsPageHtml.Content;
-            return Results.Content(html, "text/html; charset=utf-8");
-        }).AllowAnonymous();
     }
 }

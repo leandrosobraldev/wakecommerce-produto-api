@@ -16,10 +16,7 @@ public class LogsController : ControllerBase
         _logStore = logStore;
     }
 
-    /// <summary>
-    /// Retorna os últimos 500 registros de log (data, hora, nível, requisição, mensagem).
-    /// Útil para visualização em desenvolvimento. Em produção considere desabilitar ou restringir.
-    /// </summary>
+    
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<MemoryLogEntry>), StatusCodes.Status200OK)]
     public IActionResult Get()
